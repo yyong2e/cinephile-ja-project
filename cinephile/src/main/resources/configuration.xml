@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="movie" type="com.ch.cinephile.model.Movie"/>
+		<typeAlias alias="board" type="com.ch.cinephile.model.Board"/>
+		<typeAlias alias="cgvcode" type="com.ch.cinephile.model.Cgvcode"/>
+		<typeAlias alias="customer" type="com.ch.cinephile.model.Customer"/>
+		<typeAlias alias="favoritezip" type="com.ch.cinephile.model.Favoritezip"/>
+		<typeAlias alias="cfavorite" type="com.ch.cinephile.model.Cfavorite"/>
+		<typeAlias alias="rbd" type="com.ch.cinephile.model.ReplyBoard"/>
+		<typeAlias alias="monologue" type="com.ch.cinephile.model.Monologue"/>
+		<typeAlias alias="mogoodck" type="com.ch.cinephile.model.Mogoodck"/>
+		<typeAlias alias="book" type="com.ch.cinephile.model.Book"/>
+		<typeAlias alias="fzgoodck" type="com.ch.cinephile.model.Fzgoodck"/>
+		<typeAlias alias="following" type="com.ch.cinephile.model.Following"/>
+		<typeAlias alias="mvtaglink" type="com.ch.cinephile.model.Mvtaglink"/>
+		<typeAlias alias="motaglink" type="com.ch.cinephile.model.Motaglink"/>
+		<typeAlias alias="tag" type="com.ch.cinephile.model.Tag"/>
+		<typeAlias alias="genre" type="com.ch.cinephile.model.Genre"/>
+		<typeAlias alias="bogoodck" type="com.ch.cinephile.model.Bogoodck"/>
+	</typeAliases>
+	<mappers>
+		<mapper resource="movie.xml" />
+		<mapper resource="board.xml" />
+		<mapper resource="cgvcode.xml" />
+		<mapper resource="customer.xml" />
+		<mapper resource="favoritezip.xml" />
+		<mapper resource="cfavorite.xml" />
+		<mapper	resource="rbd.xml" />
+		<mapper	resource="monologue.xml" />
+		<mapper	resource="mogoodck.xml" />
+		<mapper	resource="book.xml" />
+		<mapper	resource="fzgoodck.xml" />
+		<mapper	resource="following.xml" />
+		<mapper	resource="mvtaglink.xml" />
+		<mapper	resource="motaglink.xml" />
+		<mapper	resource="tag.xml" />
+		<mapper	resource="bogoodck.xml" />
+	</mappers>
+</configuration>

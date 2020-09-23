@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bogoodckns">
+<resultMap type="bogoodck" id="bogoodckResult">
+	<result property="b_num" column="b_num"/>
+	<result property="c_id" column="c_id"/>
+</resultMap>
+	<select id="ckGood" parameterType="bogoodck" resultType="bogoodck">
+		select * from bogoodck where b_num=#{b_num} and c_id=#{c_id}
+	</select>
+	<insert id="insert" parameterType="bogoodck">
+		insert into bogoodck values(#{b_num},#{c_id})
+	</insert>
+	<delete id="delete" parameterType="bogoodck">
+		delete from bogoodck where b_num=#{b_num} and c_id=#{c_id}
+	</delete>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="followingns">
+<resultMap type="following" id="followingResult">
+	<result property="c_id" column="c_id"/>
+	<result property="f_id" column="f_id"/>
+</resultMap>
+	<select id="followCk" resultType="following">
+		select * from following where c_id=#{c_id} and f_id=#{f_id}
+	</select>
+	<delete id="delete" parameterType="following">
+		delete from following where c_id=#{c_id} and f_id=#{f_id}
+	</delete>
+	<insert id="insert" parameterType="following">
+		insert into following values(#{c_id},#{f_id})
+	</insert>
+	<select id="selectAll" parameterType="string" resultMap="followingResult">
+		select * from following where c_id=#{c_id}
+	</select>
+	<select id="selectAll2" parameterType="string" resultMap="followingResult">
+		select * from following where f_id=#{f_id}
+	</select>
+	<select id="followCnt" parameterType="string" resultType="int">
+		select count(*) from following where c_id=#{c_id}
+	</select>
+	<select id="followingCnt" parameterType="string" resultType="int">
+		select count(*) from following where f_id=#{c_id}
+	</select>
+</mapper>

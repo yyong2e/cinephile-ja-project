@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="favoritezipns">
+<resultMap type="favoritezip" id="favoritezipResult">
+	<result property="zip_num" column="zip_num"/>
+	<result property="fz_good " column="fz_good "/>
+	<result property="c_id " column="c_id "/>
+</resultMap>
+	<select id="selectZipnum" parameterType="string" resultType="int">
+		select zip_num from favoritezip where c_id=#{c_id}
+	</select>
+	<insert id="insert" parameterType="string">
+		insert into favoritezip values(favoritezip_seq.nextval,0,#{c_id})
+	</insert>
+	<select id="searchHot" resultMap="favoritezipResult">
+		select * from (select a.*, rowNum rn from (select * from favoritezip where fz_good>0 order by fz_good desc) a) where rn between 1 and 50
+	</select>
+	<select id="getId" parameterType="int" resultType="string">
+		select c_id from favoritezip where zip_num=#{zip_num}
+	</select>
+	<update id="goodup" parameterType="int">
+		update favoritezip set fz_good=fz_good+1 where zip_num=#{zip_num}
+	</update>
+	<update id="gooddown" parameterType="int">
+		update favoritezip set fz_good=fz_good-1 where zip_num=#{zip_num}
+	</update>
+</mapper>

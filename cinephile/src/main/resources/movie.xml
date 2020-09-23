@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moviens">
+<resultMap type="movie" id="movieResult">
+	<result property="mv_num" column="mv_num"/>
+	<result property="mv_name" column="mv_name"/>
+	<result property="mv_direct" column="mv_direct"/>
+	<result property="mv_genre" column="mv_genre"/>
+	<result property="mv_content" column="mv_content"/>
+	<result property="mv_mjactor" column="mv_mjactor"/>
+	<result property="mv_minactor" column="mv_minactor"/>
+	<result property="mv_reldate" column="mv_reldate"/>
+	<result property="mv_rate" column="mv_rate"/>
+	<result property="mv_runtime" column="mv_runtime"/>
+	<result property="mv_imageurl" column="mv_imageurl"/>
+	<result property="mv_grade" column="mv_grade"/>
+</resultMap>
+<!-- 추천개수 확인용 -->
+<resultMap type="cfavorite" id="cfavoriteResult">
+	<result property="mv_num" column="mv_num"/>
+	<result property="zip_num" column="zip_num"/>
+</resultMap>
+
+<!-- 장르 조회용 -->
+<resultMap type="genre" id="genreResult">
+<result property="gn_num" column="gn_num"/>
+<result property="gn_name" column="gn_name"/>
+</resultMap>
+
+<!-- 태그 검색용  -->
+<resultMap type="tag" id="tagResult">
+	<result property="tag_num" column="tag_num"/>
+	<result property="tag_con" column="tag_con"/>
+</resultMap>
+<resultMap type="mvtaglink" id="mvtaglinkResult">
+	<result property="link_id" column="link_id"/>
+	<result property="tag_num" column="tag_num"/>
+	<result property="mv_num" column="mv_num"/>
+</resultMap>
+
+
+	<select id="searchMovie" parameterType="string" resultMap="movieResult">
+		select * from movie where mv_name=#{mv_name}
+	</select>
+	<select id="searchMoviee" parameterType="int" resultType="movie">
+		select * from movie where mv_num=#{mv_num}
+	</select>
+	<insert id="insertMovie" parameterType="movie">
+		insert into movie values(#{mv_num},#{mv_name},#{mv_direct},#{mv_genre},#{mv_content},#{mv_mjactor},#{mv_minactor},#{mv_reldate},#{mv_rate},#{mv_runtime},#{mv_imageurl},#{mv_grade})
+	</insert>
+	<select id="getMovie" parameterType="integer" resultType="movie">
+		select * from movie where mv_num=#{mv_num}
+	</select>
+	<select id="getImgurl" parameterType="java.util.List" resultMap="movieResult">
+		select * from movie where mv_num in(
+		<foreach collection="list" item="item" separator=",">
+			 #{item}
+		</foreach>
+		)
+	</select>
+	<select id="getOneImgurl" parameterType="int" resultType="string">
+		select mv_imageurl from movie where mv_num=#{mv_num}
+	</select>
+	<select id="getAllMovie" parameterType="java.util.List" resultMap="movieResult">
+		select * from movie where mv_num in(
+		<foreach collection="list" item="item" separator=",">
+			 #{item}
+		</foreach>
+		)
+	</select>
+		<!-- 통합검색용 -->	
+	<select id="mvList" parameterType="movie" resultMap="movieResult">
+		select * from (select * from	
+		<if test="search != null">
+			movie mv
+			left join mvtaglink mt
+			on mt.mv_num = mv.mv_num
+			left join tag t
+			on t.tag_num=mt.tag_num 
+			where t.tag_con like '%'||#{keyword}||'%'
+		</if>
+		<if test="search == null">
+			movie
+			where mv_name like '%'||#{keyword}||'%' or mv_mjactor like '%'||#{keyword}||'%' 
+			or mv_direct like '%'||#{keyword}||'%' or mv_minactor like '%'||#{keyword}||'%'
+		</if>
+		)
+		order by mv_reldate desc
+	</select>
+	
+	
+	
+	<!-- 모든 영화 보기 -->
+	<select id="mvAll" resultMap="movieResult">
+		select m.mv_num, m.mv_name, m.mv_direct, m.mv_genre, m.mv_reldate, m.mv_imageurl, m.mv_rate, m.mv_grade, count(c.zip_num) cz
+		from movie m
+		left join CFAVORITE c
+		on m.mv_num=c.mv_num 
+		group by  m.mv_num, m.mv_name, m.mv_direct, m.mv_genre, m.mv_mjactor, 
+		m.mv_reldate, m.mv_imageurl, m.mv_rate, m.mv_grade
+		order by cz desc, m.mv_reldate desc
+	</select>
+	<select id="mvAllB" resultMap="movieResult">
+		select m.mv_num, m.mv_name, m.mv_direct, m.mv_genre, m.mv_reldate, m.mv_imageurl, m.mv_rate, m.mv_grade, count(b.book_num) bz
+		from movie m
+		left join book b
+		on m.mv_num=b.mv_num 
+		group by  m.mv_num, m.mv_name, m.mv_direct, m.mv_genre, m.mv_mjactor, 
+		m.mv_reldate, m.mv_imageurl, m.mv_rate, m.mv_grade
+		order by bz desc, m.mv_reldate desc
+	</select>
+	<select id="mvAllR" resultMap="movieResult">
+		select * from movie order by mv_rate desc
+	</select>
+	
+	
+	<update id="updatemv" parameterType="movie">
+		update movie set mv_name=#{mv_name},mv_direct=#{mv_direct},mv_genre=#{mv_genre},mv_reldate=#{mv_reldate},mv_imageurl=#{mv_imageurl}, 
+		 mv_rate=#{mv_rate}, mv_mjactor=#{mv_mjactor},mv_minactor=#{mv_minactor}, mv_runtime=#{mv_runtime},mv_grade=#{mv_grade}
+		 where mv_num=#{mv_num}
+
+	</update>
+	<!-- 장르 조회  -->
+	<select id="gnlist" resultMap="genreResult">
+	select * from genre order by gn_num
+	</select>
+</mapper>

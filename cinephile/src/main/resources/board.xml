@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardns">
+	<resultMap type="board" id="boardResult">
+      <result property="b_num" column="b_num" />
+      <result property="b_subject" column="b_subject" />
+      <result property="b_content" column="b_content" />
+      <result property="b_readcount" column="b_readcount" />
+      <result property="b_regdate" column="b_regdate" />
+      <result property="c_id" column="c_id" />
+      <result property="b_good" column="b_good" />
+      <result property="b_type" column="b_type" />
+      <result property="b_category" column="b_category" />
+      <result property="b_del" column="b_del"/>
+	</resultMap>
+
+	<select id="getTotal" parameterType="board" resultType="int">
+		select count(*) from board
+		<where>
+			<if test="keyword!=null and keyword!=''">
+				<if test="search=='subcon'">
+					(b_subject like '%'||#{keyword}||'%' or b_content like '%'||#{keyword}||'%') and b_type=#{b_type} and b_del='n'
+				</if>
+				<if test="search!='subcon'">
+					${search} like '%'||#{keyword}||'%' and b_type=#{b_type} and b_del='n'
+				</if>
+			</if>
+			<if test="keyword==null">
+				b_type=#{b_type} and b_del='n'
+			</if>
+		</where>
+	</select>
+	<select id="list" parameterType="board" resultMap="boardResult">
+		select * from(select a.*, rowNum rn from (select * from board where b_type=#{b_type} and b_del='n' order by b_num desc)a) where rn between #{startRow} and #{endRow}
+	</select>
+	<select id="list2" parameterType="string" resultMap="boardResult">
+		select * from(select a.*, rowNum rn from (select * from board where b_type=#{b_type} and b_del='n' order by b_num desc)a) where rn between #{startRow} and #{endRow}
+	</select>
+	<select id="maxNum" resultType="integer">
+		select nvl(max(b_num),0) + 1 from board
+	</select> 
+	<insert id="insert" parameterType="board">
+		insert into board values (#{b_num},#{b_subject},#{b_content},#{b_readcount},sysdate,#{c_id},#{b_good},#{b_type},#{b_category},#{b_del})
+	</insert>
+	<update id="updateReadCount" parameterType="int">
+		update board set b_readcount = b_readcount + 1 where b_num=#{b_num}
+	</update>
+	<select id="select" parameterType="integer" resultType="board">
+		select * from board where b_num=#{b_num}
+	</select>
+	<update id="update" parameterType="board">
+		update board set b_subject=#{b_subject}, b_content=#{b_content},b_type=#{b_type},b_category=#{b_category} where b_num=#{b_num}
+	</update>
+	<delete id="delete" parameterType="integer">
+		delete from board where b_num=#{b_num}
+	</delete>
+	<update id="goodUp" parameterType="int">
+		update board set b_good=b_good+1 where b_num=#{b_num}
+	</update>
+	<update id="goodDown" parameterType="int">
+		update board set b_good=b_good-1 where b_num=#{b_num}
+	</update>
+	
+	
+		<!-- 통합검색용 -->
+	<select id="rbList" parameterType="board" resultMap="boardResult">
+		select * from (select * from board
+		<where>
+			<if test="keyword != null">
+				b_subject like '%'||#{keyword}||'%' or b_content like	'%'||#{keyword}||'%'
+			</if>
+		</where>
+		)
+		where b_type = '리뷰'
+				order by b_readcount desc, b_good desc, b_regdate desc
+	</select>
+	<select id="ibList" parameterType="board" resultMap="boardResult">
+		select * from (select * from board
+		<where>
+			<if test="keyword != null">
+				b_subject like '%'||#{keyword}||'%' or b_content like	'%'||#{keyword}||'%'
+			</if>
+		</where>
+		)
+		where b_type = '영화정보'
+		order by b_readcount desc, b_good desc, b_regdate desc
+	</select>
+	<select id="fbList" parameterType="board" resultMap="boardResult">
+		select * from (select * from board
+		<where>
+			<if test="keyword != null">
+				b_subject like '%'||#{keyword}||'%' or b_content like	'%'||#{keyword}||'%'
+			</if>
+		</where>
+		)
+		where b_type = '자유'
+		order by b_readcount desc, b_good desc, b_regdate desc
+	</select>
+	<select id="nbList" parameterType="board" resultMap="boardResult">
+		select * from (select * from board
+		<where>
+			<if test="keyword != null">
+				b_subject like '%'||#{keyword}||'%' or b_content like	'%'||#{keyword}||'%'
+			</if>
+		</where>
+		)
+		where b_type = '공지'
+		order by b_readcount desc, b_good desc, b_regdate desc
+	</select>
+</mapper>

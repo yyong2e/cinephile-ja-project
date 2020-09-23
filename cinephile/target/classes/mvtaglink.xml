@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mvtaglinkns">
+<resultMap type="mvtaglink" id="mvtaglinkResult">
+	<result property="link_id" column="link_id"/>
+	<result property="tag_num" column="tag_num"/>
+	<result property="mv_num" column="mv_num"/>
+</resultMap>
+	<select id="selectAllTag" parameterType="int" resultMap="mvtaglinkResult">
+		select * from mvtaglink where mv_num=#{mv_num}
+	</select>
+	<insert id="insert" parameterType="mvtaglink">
+		insert into mvtaglink values (mvtaglink_seq.nextval,#{tag_num},#{mv_num})
+	</insert>
+	<delete id="deleteTagnum" parameterType="int">
+		delete from mvtaglink where tag_num=#{tag_num}
+	</delete>
+
+
+</mapper>
