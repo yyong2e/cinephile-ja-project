@@ -89,7 +89,6 @@ public class SearchController {
 		        } catch (UnsupportedEncodingException e) {
 		        	throw new RuntimeException("검색어 인코딩 실패",e);
 		        }
-		    System.out.println("a");
 		    String apiURL = "https://openapi.naver.com/v1/search/movie.json?query=" + text;    // json 결과
 		    Map<String, String> requestHeaders = new HashMap<>();
 		    requestHeaders.put("X-Naver-Client-Id", clientId);
@@ -103,7 +102,6 @@ public class SearchController {
 				String smv_num = responseBody.substring(0, idx);
 				responseBody = responseBody.substring(1);
 				int mv_num = Integer.parseInt(smv_num);
-				System.out.println(mv_num);
 				String URL = "https://movie.naver.com/movie/bi/mi/basic.nhn?code=" + mv_num;
 				Document doc = Jsoup.connect(URL).get();
 				Movie nmovie = new Movie();
@@ -115,8 +113,10 @@ public class SearchController {
 				Elements mv_runtime = doc.select(
 						"#content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(3)");
 				int minuteidx = mv_runtime.text().indexOf('분');
-
-				if (!rate.equals("") && minuteidx != -1) {
+				Elements mv_reldate = doc.select(
+						"#content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(4)");
+				String rel=mv_reldate.text();
+				if (!rate.equals("") && minuteidx != -1&&!rel.equals("")) {
 
 					Elements title = doc
 							.select("#content > div.article > div.mv_info_area > div.mv_info > h3 > a:nth-child(1)");
@@ -147,7 +147,7 @@ public class SearchController {
 							min += mv_min.text() + " ";
 						}
 					}
-					Elements mv_reldate = doc.select(
+					mv_reldate = doc.select(
 							"#content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(4)");
 					Elements mv_imageurl = doc
 							.select("#content > div.article > div.mv_info_area > div.poster > a > img");
@@ -182,9 +182,7 @@ public class SearchController {
 					nmovie.setMv_runtime(Integer.parseInt(runtime));
 					String image = mv_imageurl.attr("src");
 					nmovie.setMv_imageurl(image);
-					System.out.println("q");
 					ms.insert(nmovie);
-					System.out.println("xx");
 				}
 			}
 			mvList = (List<Movie>)ms.mvList(movie);

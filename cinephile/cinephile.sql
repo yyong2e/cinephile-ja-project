@@ -151,7 +151,7 @@ drop table movie;
 update movie set mv_reldate = '재개봉, 2020. 08.26 개봉' where mv_num=190010;
 update movie set mv_imageurl = 'https://movie-phinf.pstatic.net/20181019_236/1539926790655oHv5z_JPEG/movie_image.jpg?type=m203_290_2' where mv_num=30688;
 update movie set mv_genre = '코미디' where mv_num=182234;
-delete from movie where mv_name like '%대한이%';
+delete from movie where mv_num =167491;
 ----------------------------------------
 
 -- 8. board 게시판

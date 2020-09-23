@@ -248,12 +248,14 @@ public class MovieinfoController {
 	public String movieList(Model model, Movie movie, HttpSession session) throws IOException {
 		// 전체 목록 가져오기
 		List<Movie> mvAll = (List<Movie>) ms.mvAll();
-
+		if(mvAll!=null) {
+			
 		// 개봉일 편집
 		String rd = null;
 		List reldate = new ArrayList();
 		for (int i = 0; i < mvAll.size(); i++) {
 			rd = mvAll.get(i).getMv_reldate();
+			System.out.println(rd);
 			int size = rd.length();
 			if (size > 14) {
 				int idx = rd.indexOf(",");
@@ -282,7 +284,6 @@ public class MovieinfoController {
 		String c_id = (String) session.getAttribute("c_id");
 		if (c_id != null) {
 			int zip_num = fs.selectZipnum(c_id);
-			System.out.println(zip_num);
 			List<Cfavorite> cfa = new ArrayList();
 			
 			cfa = cfs.ckChoiceAll(zip_num);
@@ -321,7 +322,7 @@ public class MovieinfoController {
 			} else
 				mvAll.get(i).setRechk(0);
 		}
-
+		}
 		model.addAttribute("mvAll", mvAll);
 		return "movie/movieList";
 	}
